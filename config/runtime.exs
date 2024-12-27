@@ -20,6 +20,13 @@ if System.get_env("PHX_SERVER") do
   config :spotlight, SpotlightWeb.Endpoint, server: true
 end
 
+tvdb_secret_key =
+  System.get_env("TVDB_SECRET_KEY") ||
+    raise """
+    environment variable TVDB_SECRET_KEY is missing.
+    """
+config :spotlight, tvdb_secret_key: tvdb_secret_key
+
 if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") ||

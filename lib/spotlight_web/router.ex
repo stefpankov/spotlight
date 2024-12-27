@@ -64,10 +64,14 @@ defmodule SpotlightWeb.Router do
   scope "/", SpotlightWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    get "/explore/movies", MovieController, :index
+
     live_session :require_authenticated_user,
       on_mount: [{SpotlightWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/explore/search", ExploreSearchLive
     end
   end
 

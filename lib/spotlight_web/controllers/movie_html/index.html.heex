@@ -1,0 +1,8 @@
+<.flash_group flash={@flash} />
+<h1>Movies</h1>
+
+<.list>
+  <:item :for={movie <- @movies} title={movie.name}>
+    <div>Year: {movie.year}</div>
+  </:item>
+</.list>
