@@ -39,3 +39,5 @@ npm-debug.log
 *.db
 *.db-*
 
+# cache files
+req_tvdb_auth

@@ -519,6 +519,71 @@ defmodule SpotlightWeb.CoreComponents do
     """
   end
 
+  @doc ~S"""
+  Renders a movie/series list with generic styling.
+
+  ## Examples
+
+      <.movies id="movies" items={@movies}>
+      </.movies>
+  """
+  attr :id, :string, required: true
+  attr :items, :list, required: true
+  attr :item_id, :any, default: nil, doc: "the function for generating the row id"
+  attr :item_click, :any, default: nil, doc: "the function for handling phx-click on each row"
+
+  attr :movie_item, :any,
+    default: &Function.identity/1,
+    doc: "the function for mapping each row before calling the :col and :action slots"
+
+  slot :action, doc: "the slot for showing user actions in the last table column"
+
+  def movies(assigns) do
+    assigns =
+      with %{items: %Phoenix.LiveView.LiveStream{}} <- assigns do
+        assign(assigns, item_id: assigns.item_id || fn {id, _item} -> id end)
+      end
+
+    ~H"""
+    <ul
+      id={@id}
+      phx-update={match?(%Phoenix.LiveView.LiveStream{}, @items) && "stream"}
+      role="list"
+      class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 mt-4"
+    >
+      <li
+        :for={{_, movie} = item <- @items} id={@item_id && @item_id.(item)}
+        class="relative"
+      >
+        <div class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+          <img
+            src={movie.image_url}
+            alt={movie.name}
+            class="pointer-events-none object-cover group-hover:opacity-75"
+          />
+        </div>
+        <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">
+          {movie.name}
+        </p>
+        <p class="pointer-events-none block text-sm font-medium text-gray-500">{movie.year}</p>
+        <%= if movie.rating != nil do %>
+          <p class="pointer-events-none mt-2 block truncate text-sm">
+            <%= for _ <- Range.new(1, movie.rating) do %>
+              <.icon name="hero-star-solid" class="h-5 w-5" />
+            <% end %>
+          </p>
+        <% end %>
+        <span
+          :for={action <- @action}
+          class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        >
+          {render_slot(action, @movie_item.(movie))}
+        </span>
+      </li>
+    </ul>
+    """
+  end
+
   @doc """
   Renders a data list.
 

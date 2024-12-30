@@ -1,6 +1,7 @@
 alias Spotlight.TVDB.ApiClient.Resource
 
 defmodule Spotlight.TVDB.SearchResult do
+  @derive Jason.Encoder
   defstruct [:id, :name, :image_url, :type, :year]
 
   @type t :: %__MODULE__{

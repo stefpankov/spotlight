@@ -72,6 +72,13 @@ defmodule SpotlightWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/explore/search", ExploreSearchLive
+
+      live "/movies", MovieLive.Index, :index
+      live "/movies/new", MovieLive.Index, :new
+      live "/movies/:id/edit", MovieLive.Index, :edit
+
+      live "/movies/:id", MovieLive.Show, :show
+      live "/movies/:id/show/edit", MovieLive.Show, :edit
     end
   end
 

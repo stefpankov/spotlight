@@ -1,0 +1,29 @@
+<.header>
+  Movie {@movie.id}
+  <:subtitle>This is a movie record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/movies/#{@movie}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit movie</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="External">{@movie.external_id}</:item>
+  <:item title="Name">{@movie.name}</:item>
+  <:item title="Image url">{@movie.image_url}</:item>
+  <:item title="Rating">{@movie.rating}</:item>
+</.list>
+
+<.back navigate={~p"/movies"}>Back to movies</.back>
+
+<.modal :if={@live_action == :edit} id="movie-modal" show on_cancel={JS.patch(~p"/movies/#{@movie}")}>
+  <.live_component
+    module={SpotlightWeb.MovieLive.FormComponent}
+    id={@movie.id}
+    title={@page_title}
+    action={@live_action}
+    movie={@movie}
+    patch={~p"/movies/#{@movie}"}
+  />
+</.modal>
