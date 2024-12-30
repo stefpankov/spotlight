@@ -4,19 +4,25 @@ defmodule Spotlight.MoviesFixtures do
   entities via the `Spotlight.Movies` context.
   """
 
+  alias Spotlight.Accounts.User
+
   @doc """
   Generate a movie.
   """
-  def movie_fixture(attrs \\ %{}) do
-    {:ok, movie} =
+  def movie_fixture(%User{} = user, attrs \\ %{}) do
+    attrs =
       attrs
       |> Enum.into(%{
-        external_id: "some external_id",
-        image_url: "some image_url",
-        name: "some name",
-        rating: 42
+        user_id: user.id,
+        external_id: "movie-1235",
+        image_url: "some_image_url",
+        name: "some_name",
+        rating: 6,
+        year: "2006"
       })
-      |> Spotlight.Movies.create_movie()
+
+    {:ok, movie} =
+      Spotlight.Movies.create_movie(user, attrs)
 
     movie
   end

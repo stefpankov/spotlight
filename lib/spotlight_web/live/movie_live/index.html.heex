@@ -44,6 +44,7 @@
   <.live_component
     module={SpotlightWeb.MovieLive.FormComponent}
     id={@movie.id || :new}
+    user={@current_user}
     title={@page_title}
     action={@live_action}
     movie={@movie}

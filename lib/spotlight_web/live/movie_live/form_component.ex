@@ -2,6 +2,7 @@ defmodule SpotlightWeb.MovieLive.FormComponent do
   use SpotlightWeb, :live_component
 
   alias Spotlight.Movies
+  alias Spotlight.Movies.Movie
 
   @impl true
   def render(assigns) do
@@ -23,6 +24,7 @@ defmodule SpotlightWeb.MovieLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:image_url]} type="text" label="Image url" />
         <.input field={@form[:rating]} type="number" label="Rating" />
+        <.input field={@form[:year]} type="number" label="Year" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Movie</.button>
         </:actions>
@@ -67,7 +69,9 @@ defmodule SpotlightWeb.MovieLive.FormComponent do
   end
 
   defp save_movie(socket, :new, movie_params) do
-    case Movies.create_movie(movie_params) do
+    movie_params =
+      Movies.change_movie(%Movie{}, movie_params)
+    case Movies.create_movie(socket.assigns.user, movie_params.changes) do
       {:ok, movie} ->
         notify_parent({:saved, movie})
 

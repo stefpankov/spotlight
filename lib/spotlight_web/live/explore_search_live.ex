@@ -82,7 +82,6 @@ defmodule SpotlightWeb.ExploreSearchLive do
     with {:ok, %{data: data}} <- Search.simple(query, type),
       annotated <- Movies.annotated_tracked(user, Enum.map(data, &(&1.id)))
     do
-      IO.inspect(annotated)
       {:noreply, socket |> assign(search_results: data, annotated: annotated)}
     else
       {:error, exception} ->

@@ -37,10 +37,19 @@ defmodule Spotlight.Movies do
     |> Repo.all()
   end
 
+  @doc """
+  Given a list of external ids, returns a map where the ids are keys, and the value is true.
+  Meant to be used when comparing whether the user has already tracked the given movies.
+
+  ## Examples
+
+      iex> annotated_tracked(%User{}, ["movie-124", "movie-789", "movie-9127"])
+      %{"movie-124": true, "movie-9127": true}
+
+  """
   def annotated_tracked(%User{}, external_ids) do
     (from m in Movie, where: m.external_id in ^external_ids)
     |> Repo.all()
-    |> IO.inspect()
     |> Enum.into(%{}, &({&1.external_id, true}))
   end
 
@@ -77,10 +86,8 @@ defmodule Spotlight.Movies do
 
   """
   def create_movie(%User{} = user, attrs \\ %{}) do
-    attrs = Map.put(attrs, :user_id, user.id)
     %Movie{}
-    |> Movie.changeset(attrs)
-    |> IO.inspect()
+    |> Movie.changeset(Map.put(attrs, :user_id, user.id))
     |> Repo.insert()
   end
 
@@ -129,6 +136,6 @@ defmodule Spotlight.Movies do
 
   """
   def change_movie(%Movie{} = movie, attrs \\ %{}) do
-    Movie.changeset(movie, attrs)
+    Movie.validation_changeset(movie, attrs)
   end
 end
