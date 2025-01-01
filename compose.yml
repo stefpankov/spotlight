@@ -1,0 +1,31 @@
+services:
+  reverse-proxy:
+    image: traefik:v3.2
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - spotlight-db-data:/app/data
+    environment:
+      SECRET_KEY_BASE: "uVVkIKBQullXFU0Awox6fAYur3nI8D+EmLKroNouV/o526Y6kzv5A1ABz9b/mL9z"
+      PHX_SERVER: true
+      PHX_HOST: spotlightapp.localhost
+      PORT: "8000"
+      TVDB_SECRET_KEY: $TVDB_SECRET_KEY
+      DATABASE_PATH: /app/data/spotlight.db
+    labels:
+      - "traefik.http.routers.app-spotlight.rule=Host(`spotlightapp.localhost`)"
+
+volumes:
+  spotlight-db-data: {}
