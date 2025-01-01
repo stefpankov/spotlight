@@ -18,7 +18,8 @@ services:
     volumes:
       - spotlight-db-data:/app/data
     environment:
-      SECRET_KEY_BASE: "uVVkIKBQullXFU0Awox6fAYur3nI8D+EmLKroNouV/o526Y6kzv5A1ABz9b/mL9z"
+      # can be generated with mix phx.gen.secret
+      SECRET_KEY_BASE: $SECRET_KEY_BASE
       PHX_SERVER: true
       PHX_HOST: spotlightapp.localhost
       PORT: "8000"
