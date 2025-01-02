@@ -41,3 +41,6 @@ npm-debug.log
 
 # cache files
 req_tvdb_auth
+
+# OS specific
+.DS_Store

@@ -8,22 +8,16 @@ defmodule SpotlightWeb.ExploreSearchLive do
 
   def render(assigns) do
     ~H"""
-    <.header class="text-center">
+    <.header>
       Explore
-      <:subtitle>Search for TV series or Movies</:subtitle>
     </.header>
 
     <div class="space-y-12 divide-y">
       <div>
-        <.simple_form for={@search_form} id="search_form" phx-submit="search">
-          <.input field={@search_form[:query]} type="text" label="Query" required />
-          <.input
-            field={@search_form[:type]}
-            type="select"
-            label="Type"
-            required
-            options={[Movie: "movie", Series: "series"]}
-          />
+        <.simple_form id="search_form" class="flex items-end gap-8"
+          for={@search_form} phx-submit="search"
+        >
+          <.input field={@search_form[:query]} type="text" label="Search for movies" required />
           <:actions>
             <.button phx-disable-with="Searching...">Search</.button>
           </:actions>
@@ -76,10 +70,10 @@ defmodule SpotlightWeb.ExploreSearchLive do
   end
 
   def handle_event("search", %{"search_form" => params}, socket) do
-    %{"query" => query, "type" => type} = params
+    %{"query" => query} = params
     user = socket.assigns.current_user
 
-    with {:ok, %{data: data}} <- Search.simple(query, type),
+    with {:ok, %{data: data}} <- Search.simple(query, "movie"),
       annotated <- Movies.annotated_tracked(user, Enum.map(data, &(&1.id)))
     do
       {:noreply, socket |> assign(search_results: data, annotated: annotated)}
